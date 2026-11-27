@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Golden Honey Store | น้ำผึ้งแท้จากธรรมชาติ 100%</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Prompt:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Prompt', sans-serif;
+      scroll-behavior: smooth;
+    }
+    .page-section {
+      display: none;
+      animation: fadeIn 0.35s ease-in-out;
+    }
+    .page-section.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .honey-gradient {
+      background: linear-gradient(135deg, #F59E0B 0%, #D97706 50%, #B45309 100%);
+    }
+    .honeycomb-bg {
+      background-color: #FFFBEB;
+      background-image: radial-gradient(#FDE68A 1px, transparent 1px);
+      background-size: 20px 20px;
+    }
+    /* Custom scrollbar */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-track { background: #FEF3C7; }
+    ::-webkit-scrollbar-thumb { background: #D97706; border-radius: 4px; }
+  </style>
+</head>
+<body class="honeycomb-bg text-stone-800 min-h-screen flex flex-col">
+
+  <!-- Toast Notification Container -->
+  <div id="toast-container" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 pointer-events-none"></div>
+
+  <!-- Navigation Bar -->
+  <header class="bg-white/95 backdrop-blur-md shadow-sm sticky top-0 z-40 border-b border-amber-200">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex justify-between items-center h-16">
+        <!-- Brand Logo -->
+        <div onclick="navigateTo('home')" class="flex items-center gap-2.5 cursor-pointer group">
+          <div class="w-10 h-10 rounded-xl honey-gradient flex items-center justify-center text-white text-xl shadow-md group-hover:scale-105 transition">
+            🍯
+          </div>
+          <div>
+            <span class="font-bold text-lg sm:text-xl text-amber-900 tracking-tight block leading-none">Golden Honey</span>
+            <span class="text-[11px] text-amber-600 font-medium">น้ำผึ้งแท้จากธรรมชาติ 100%</span>
+          </div>
+        </div>
+
+        <!-- Desktop Menu -->
+        <nav class="hidden md:flex items-center space-x-1 lg:space-x-2">
+          <button onclick="navigateTo('home')" data-nav="home" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition text-amber-900 bg-amber-100">
+            หน้าแรก
+          </button>
+          <button onclick="navigateTo('products')" data-nav="products" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition text-stone-600 hover:bg-amber-50 hover:text-amber-800">
+            สินค้า (SKUs)
+          </button>
+          <button onclick="navigateTo('order')" data-nav="order" class="nav-btn px-4 py-2 rounded-xl text-sm font-medium transition text-stone-600 hover:bg-amber-50 hover:text-amber-800 flex items-center gap-1.5">
+            <span>สั่งซื้อสินค้า</span>
+            <span id="nav-cart-badge" class="bg-amber-600 text-white text-xs font-bold px-2 py-0.5 rounded-full">0</span>
+          </button>
+          <button onclick="navigateTo('admin')" data-nav="admin" class="nav-btn ml-2 px-4 py-2 rounded-xl text-sm font-medium transition bg-stone-800 text-amber-300 hover:bg-stone-900 flex items-center gap-1.5 shadow-sm">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>หน้าแอดมิน</span>
+          </button>
+        </nav>
+
+        <!-- Mobile Cart & Menu Button -->
+        <div class="flex items-center gap-2 md:hidden">
+          <button onclick="navigateTo('order')" class="relative p-2 text-amber-800 bg-amber-100 rounded-xl">
+            🛒
+            <span id="mobile-cart-badge" class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">0</span>
+          </button>
+          <button onclick="toggleMobileMenu()" class="p-2 rounded-xl text-stone-700 hover:bg-amber-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Menu -->
+    <div id="mobile-menu" class="hidden md:hidden bg-white border-t border-amber-100 px-4 pt-2 pb-4 space-y-1 shadow-lg">
+      <button onclick="navigateTo('home'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-amber-900 hover:bg-amber-50">🏠 หน้าแรก</button>
+      <button onclick="navigateTo('products'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-amber-900 hover:bg-amber-50">🍯 สินค้าของเรา (2+ SKUs)</button>
+      <button onclick="navigateTo('order'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-amber-900 hover:bg-amber-50">🛒 หน้าสั่งซื้อสินค้า</button>
+      <button onclick="navigateTo('admin'); toggleMobileMenu()" class="block w-full text-left px-4 py-2.5 rounded-xl text-sm font-medium text-stone-800 bg-amber-100/70">⚙️ หน้าแอดมิน (Google Sheets DB)</button>
+    </div>
+  </header>
+
+  <!-- Main Content Container -->
+  <main class="flex-grow">
+
+    <!-- ==========================================
+         PAGE 1: หน้าแรก (HOME PAGE)
+    =========================================== -->
+    <section id="page-home" class="page-section active">
+      <!-- Hero Section -->
+      <div class="relative overflow-hidden bg-gradient-to-b from-amber-100/80 via-amber-50 to-transparent pt-10 pb-16 lg:pt-16 lg:pb-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-10 items-center">
+            <!-- Left Text -->
+            <div class="lg:col-span-7 text-center lg:text-left">
+              <div class="inline-flex items-center gap-2 bg-white border border-amber-300 text-amber-800 px-4 py-1.5 rounded-full text-xs sm:text-sm font-semibold shadow-sm mb-6">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-ping"></span>
+                <span>คัดสรรน้ำผึ้งแท้คุณภาพระดับตำนาน ส่งตรงถึงบ้านคุณ</span>
+              </div>
+              <h1 class="text-3xl sm:text-5xl lg:text-6xl font-bold text-amber-950 leading-tight mb-6">
+                ความหวานบริสุทธิ์จาก<br>
+                <span class="text-transparent bg-clip-text honey-gradient">ธรรมชาติแท้ 100%</span>
+              </h1>
+              <p class="text-stone-600 text-base sm:text-lg max-w-2xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+                รวมสุดยอดน้ำผึ้งแท้ยอดนิยมของไทย ทั้ง <strong>น้ำผึ้งเวชพงศ์</strong> สูตรต้นตำรับขวดบีบใช้งานสะดวก และ <strong>น้ำผึ้งดอยคำ เกสรดอกลำไย</strong> หอมหวานละมุน ไม่แต่งกลิ่น ไม่เจือสี
+              </p>
+              <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
+                <button onclick="navigateTo('products')" class="honey-gradient text-white px-8 py-4 rounded-2xl font-semibold text-base sm:text-lg shadow-lg shadow-amber-500/30 hover:opacity-95 transition transform hover:-translate-y-0.5 flex items-center justify-center gap-2">
+                  <span>เลือกชมสินค้าทั้งหมด</span>
+                  <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                </button>
+                <button onclick="navigateTo('order')" class="bg-white text-amber-900 border-2 border-amber-300 px-8 py-4 rounded-2xl font-semibold text-base sm:text-lg hover:bg-amber-50 transition flex items-center justify-center gap-2">
+                  <span>🛒 สั่งซื้อด่วน</span>
+                </button>
+              </div>
+
+              <!-- Trust Badges -->
+              <div class="grid grid-cols-3 gap-4 mt-10 pt-8 border-t border-amber-200/70 max-w-lg mx-auto lg:mx-0">
+                <div>
+                  <div class="text-2xl font-bold text-amber-800">100%</div>
+                  <div class="text-xs text-stone-500">น้ำผึ้งแท้ไม่ผสมน้ำตาล</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-amber-800">24 ชม.</div>
+                  <div class="text-xs text-stone-500">จัดส่งรวดเร็วทั่วประเทศ</div>
+                </div>
+                <div>
+                  <div class="text-2xl font-bold text-amber-800">4.9 ★</div>
+                  <div class="text-xs text-stone-500">คะแนนความพึงพอใจ</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Right Visual Showcase (Custom SVG Product Display) -->
+            <div class="lg:col-span-5 flex justify-center">
+              <div class="relative w-full max-w-md bg-white/80 backdrop-blur p-6 sm:p-8 rounded-3xl shadow-xl border border-amber-200">
+                <div class="absolute -top-4 -right-4 bg-red-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-full shadow-md transform rotate-6">
+                  สินค้าขายดี!
+                </div>
+                <div class="grid grid-cols-2 gap-4 items-end">
+                  <!-- Mini Preview SKU 1 -->
+                  <div onclick="navigateTo('products')" class="cursor-pointer group bg-amber-50/70 rounded-2xl p-4 text-center border border-amber-100 hover:border-amber-400 transition">
+                    <div id="hero-svg-1" class="h-44 flex items-center justify-center group-hover:scale-105 transition"></div>
+                    <p class="font-bold text-sm text-amber-950 mt-2">น้ำผึ้งเวชพงศ์</p>
+                    <p class="text-xs text-amber-700 font-semibold">แพ็กคู่สุดคุ้ม 250.-</p>
+                  </div>
+                  <!-- Mini Preview SKU 2 -->
+                  <div onclick="navigateTo('products')" class="cursor-pointer group bg-amber-50/70 rounded-2xl p-4 text-center border border-amber-100 hover:border-amber-400 transition">
+                    <div id="hero-svg-2" class="h-44 flex items-center justify-center group-hover:scale-105 transition"></div>
+                    <p class="font-bold text-sm text-amber-950 mt-2">น้ำผึ้งดอยคำ</p>
+                    <p class="text-xs text-amber-700 font-semibold">เกสรดอกลำไย 180.-</p>
+                  </div>
+                </div>
+                <div class="mt-4 bg-amber-100/80 rounded-xl p-3 text-center text-xs text-amber-900 font-medium">
+                  ✨ คลิกที่สินค้าเพื่อดูรายละเอียดและสั่งซื้อ
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Features Section -->
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div class="text-center mb-10">
+          <h2 class="text-2xl sm:text-3xl font-bold text-amber-950">ทำไมต้องเลือกน้ำผึ้งจากร้านของเรา?</h2>
+          <p class="text-stone-600 text-sm sm:text-base mt-2">เราคัดเฉพาะแบรนด์มาตรฐานที่ได้รับความไว้วางใจมายาวนาน</p>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-4">🌿</div>
+            <h3 class="font-bold text-lg text-amber-950 mb-2">บริสุทธิ์จากธรรมชาติ 100%</h3>
+            <p class="text-stone-600 text-sm leading-relaxed">เก็บเกี่ยวตามฤดูกาล ปราศจากสารปรุงแต่งสี กลิ่น และวัตถุกันเสีย คงคุณค่าเอนไซม์และสารต้านอนุมูลอิสระครบถ้วน</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-4">🏅</div>
+            <h3 class="font-bold text-lg text-amber-950 mb-2">มาตรฐาน อย. และ GMP</h3>
+            <p class="text-stone-600 text-sm leading-relaxed">มั่นใจในความสะอาด ปลอดภัย ผ่านการตรวจสอบคุณภาพความชื้นและน้ำตาลธรรมชาติทุกขวด</p>
+          </div>
+          <div class="bg-white p-6 rounded-2xl shadow-sm border border-amber-100">
+            <div class="w-12 h-12 rounded-xl bg-amber-100 text-amber-700 flex items-center justify-center text-2xl mb-4">📦</div>
+            <h3 class="font-bold text-lg text-amber-950 mb-2">แพ็กกันกระแทกอย่างดี</h3>
+            <p class="text-stone-600 text-sm leading-relaxed">ห่อบับเบิ้ลหนาพิเศษทุกออเดอร์ รับประกันสินค้าถึงมือในสภาพสมบูรณ์พร้อมรับประทาน</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PAGE 2: หน้าสินค้า (PRODUCTS PAGE - 2+ SKUs)
+    =========================================== -->
+    <section id="page-products" class="page-section py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="flex flex-col md:flex-row md:items-end justify-between mb-8 gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-amber-600 bg-amber-100 px-3 py-1 rounded-full">Product Catalog</span>
+            <h2 class="text-2xl sm:text-4xl font-bold text-amber-950 mt-2">รายการสินค้าของเรา</h2>
+            <p class="text-stone-600 text-sm mt-1">ข้อมูลสินค้าซิงค์กับฐานข้อมูล Google Sheets (แท็บ Products) และคลังรูปภาพแยกต่างหาก</p>
+          </div>
+          <button onclick="navigateTo('order')" class="self-start md:self-auto bg-amber-800 text-white px-5 py-2.5 rounded-xl text-sm font-medium hover:bg-amber-900 transition flex items-center gap-2 shadow">
+            <span>ไปที่ตะกร้าสินค้า</span>
+            <span id="prod-page-badge" class="bg-amber-500 text-amber-950 font-bold px-2 py-0.5 rounded-full text-xs">0</span>
+          </button>
+        </div>
+
+        <!-- Product Grid Container -->
+        <div id="products-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
+          <!-- Rendered dynamically by JS -->
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PAGE 3: หน้าสั่งซื้อ (ORDER / CHECKOUT PAGE)
+    =========================================== -->
+    <section id="page-order" class="page-section py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="mb-8">
+          <h2 class="text-2xl sm:text-3xl font-bold text-amber-950">🛒 ตะกร้าสินค้าและยืนยันการสั่งซื้อ</h2>
+          <p class="text-stone-600 text-sm mt-1">ตรวจสอบรายการสินค้าและกรอกข้อมูลจัดส่ง ระบบจะบันทึกออเดอร์ลง Google Sheets ทันที</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+          <!-- Left: Cart Items -->
+          <div class="lg:col-span-7 bg-white p-6 rounded-3xl shadow-sm border border-amber-100">
+            <div class="flex justify-between items-center border-b border-amber-100 pb-4 mb-4">
+              <h3 class="font-bold text-lg text-amber-950">รายการสินค้าที่เลือก</h3>
+              <button onclick="navigateTo('products')" class="text-xs font-semibold text-amber-700 hover:underline">+ เลือกสินค้าเพิ่ม</button>
+            </div>
+
+            <div id="cart-items-container" class="space-y-4">
+              <!-- Cart items injected here -->
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-amber-100 space-y-2 text-sm">
+              <div class="flex justify-between text-stone-600">
+                <span>ค่าจัดส่ง (โปรโมชั่นส่งฟรีทั่วไทย)</span>
+                <span class="text-green-600 font-semibold">ฟรี 0 บาท</span>
+              </div>
+              <div class="flex justify-between items-center text-lg font-bold text-amber-950 pt-2">
+                <span>ยอดชำระสุทธิ</span>
+                <span id="order-total-price" class="text-2xl text-amber-600">0 บาท</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Customer Form -->
+          <div class="lg:col-span-5 bg-white p-6 rounded-3xl shadow-sm border border-amber-100">
+            <h3 class="font-bold text-lg text-amber-950 border-b border-amber-100 pb-4 mb-4">ข้อมูลสำหรับจัดส่งสินค้า</h3>
+            <form id="order-form" onsubmit="handleOrderSubmit(event)" class="space-y-4">
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">ชื่อ-นามสกุล ผู้รับ *</label>
+                <input type="text" id="cust-name" required placeholder="เช่น สมชาย ใจดี" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">เบอร์โทรศัพท์ติดต่อ *</label>
+                <input type="tel" id="cust-phone" required placeholder="เช่น 081-234-5678" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-sm">
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">ที่อยู่จัดส่ง (บ้านเลขที่, ถนน, ตำบล, อำเภอ, จังหวัด, รหัสไปรษณีย์) *</label>
+                <textarea id="cust-address" rows="3" required placeholder="กรอกที่อยู่จัดส่งให้ครบถ้วน..." class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:border-amber-500 focus:ring-2 focus:ring-amber-200 outline-none text-sm"></textarea>
+              </div>
+              <div>
+                <label class="block text-xs font-semibold text-stone-700 mb-1">ช่องทางการชำระเงิน</label>
+                <select id="cust-payment" class="w-full px-4 py-2.5 rounded-xl border border-stone-200 focus:border-amber-500 outline-none text-sm bg-white">
+                  <option value="เก็บเงินปลายทาง (COD)">🚚 เก็บเงินปลายทาง (COD)</option>
+                  <option value="โอนเงินผ่านธนาคาร / PromptPay">📱 โอนเงินผ่านธนาคาร / PromptPay</option>
+                </select>
+              </div>
+
+              <button type="submit" id="btn-confirm-order" class="w-full honey-gradient text-white font-bold py-3.5 rounded-xl shadow-lg shadow-amber-500/30 hover:opacity-95 transition mt-2">
+                ยืนยันการสั่งซื้อสินค้า
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PAGE 4: หน้าแอดมิน (ADMIN DASHBOARD PAGE)
+    =========================================== -->
+    <section id="page-admin" class="page-section py-10">
+      <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <!-- Admin Header -->
+        <div class="bg-stone-900 text-white p-6 rounded-3xl shadow-lg mb-8">
+          <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+            <div>
+              <div class="flex items-center gap-2">
+                <span class="bg-green-500/20 text-green-400 border border-green-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">● Connected to Google Sheets DB</span>
+                <span class="bg-blue-500/20 text-blue-300 border border-blue-500/30 text-xs px-2.5 py-0.5 rounded-full font-medium">📁 Drive Folder: /Honey_Images</span>
+              </div>
+              <h2 class="text-2xl font-bold mt-2">ระบบจัดการหลังบ้าน (Admin Dashboard)</h2>
+              <p class="text-stone-400 text-xs sm:text-sm mt-1">จัดการคำสั่งซื้อ อัปเดตสถานะจัดส่ง จัดการคลังสินค้า SKUs และดูโฟลเดอร์เก็บรูปภาพแยกต่างหาก</p>
+            </div>
+
+            <!-- Google Apps Script URL Config -->
+            <div class="bg-stone-800 p-3.5 rounded-2xl border border-stone-700 flex flex-col sm:flex-row gap-2 items-stretch sm:items-center">
+              <input type="text" id="gas-url-input" placeholder="วาง Google Apps Script Web App URL (ถ้ามี)" class="bg-stone-900 text-stone-200 text-xs px-3 py-2 rounded-xl border border-stone-700 focus:border-amber-400 outline-none w-full sm:w-64">
+              <button onclick="saveGasUrl()" class="bg-amber-500 text-stone-950 font-bold text-xs px-4 py-2 rounded-xl hover:bg-amber-400 transition whitespace-nowrap">
+                บันทึก URL เชื่อมต่อ
+              </button>
+            </div>
+          </div>
+
+          <!-- Admin Sub-Navigation Tabs -->
+          <div class="flex flex-wrap gap-2 mt-6 pt-4 border-t border-stone-800">
+            <button onclick="switchAdminTab('orders')" id="tab-btn-orders" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-stone-950 transition">
+              📋 รายการสั่งซื้อ (Sheet: Orders)
+            </button>
+            <button onclick="switchAdminTab('products')" id="tab-btn-products" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-stone-800 text-stone-300 hover:bg-stone-700 transition">
+              🍯 จัดการสินค้า SKUs (Sheet: Products)
+            </button>
+            <button onclick="switchAdminTab('drive')" id="tab-btn-drive" class="px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-stone-800 text-stone-300 hover:bg-stone-700 transition">
+              📁 โฟลเดอร์เก็บรูปภาพ (Google Drive)
+            </button>
+          </div>
+        </div>
+
+        <!-- TAB 1: Orders Management -->
+        <div id="admin-tab-orders" class="bg-white rounded-3xl shadow-sm border border-amber-100 overflow-hidden">
+          <div class="p-6 border-b border-stone-100 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+            <div>
+              <h3 class="font-bold text-lg text-stone-800">ฐานข้อมูลคำสั่งซื้อ (Google Sheet: <code class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded">Orders</code>)</h3>
+              <p class="text-xs text-stone-500">เปลี่ยนสถานะออเดอร์ได้ทันที ข้อมูลจะถูกซิงค์อัตโนมัติ</p>
+            </div>
+            <div class="flex gap-2">
+              <span id="admin-order-count" class="bg-amber-100 text-amber-900 text-xs font-bold px-3 py-1.5 rounded-xl">ทั้งหมด 0 รายการ</span>
+            </div>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-left border-collapse">
+              <thead>
+                <tr class="bg-stone-50 text-stone-600 text-xs uppercase border-b border-stone-200">
+                  <th class="p-4">Order ID</th>
+                  <th class="p-4">วันที่สั่งซื้อ</th>
+                  <th class="p-4">ข้อมูลลูกค้า / ที่อยู่</th>
+                  <th class="p-4">รายการสินค้า</th>
+                  <th class="p-4">ยอดรวม</th>
+                  <th class="p-4">สถานะ</th>
+                  <th class="p-4">อัปเดตสถานะ</th>
+                </tr>
+              </thead>
+              <tbody id="admin-orders-tbody" class="divide-y divide-stone-100 text-sm">
+                <!-- Orders rows rendered by JS -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- TAB 2: Products SKU Management -->
+        <div id="admin-tab-products" class="hidden space-y-6">
+          <!-- Add New SKU Form -->
+          <div class="bg-white p-6 rounded-3xl shadow-sm border border-amber-100">
+            <h3 class="font-bold text-lg text-stone-800 mb-4">+ เพิ่มสินค้า SKU ใหม่ลง Google Sheet (<code class="bg-amber-100 text-amber-900 px-1.5 py-0.5 rounded">Products</code>)</h3>
+            <form onsubmit="handleAddProduct(event)" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+              <input type="text" id="new-sku" required placeholder="รหัส SKU (เช่น SKU-003)" class="px-3.5 py-2.5 rounded-xl border border-stone-200 text-sm">
+              <input type="text" id="new-name" required placeholder="ชื่อสินค้า" class="px-3.5 py-2.5 rounded-xl border border-stone-200 text-sm">
+              <input type="number" id="new-price" required placeholder="ราคา (บาท)" class="px-3.5 py-2.5 rounded-xl border border-stone-200 text-sm">
+              <input type="text" id="new-desc" required placeholder="รายละเอียดสินค้า" class="px-3.5 py-2.5 rounded-xl border border-stone-200 text-sm">
+              <button type="submit" class="honey-gradient text-white font-semibold rounded-xl py-2.5 px-4 text-sm hover:opacity-95 shadow">
+                บันทึกสินค้าใหม่
+              </button>
+            </form>
+          </div>
+
+          <!-- Existing Products Table -->
+          <div class="bg-white rounded-3xl shadow-sm border border-amber-100 overflow-hidden">
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse">
+                <thead>
+                  <tr class="bg-stone-50 text-stone-600 text-xs uppercase border-b border-stone-200">
+                    <th class="p-4">SKU</th>
+                    <th class="p-4">ชื่อสินค้า</th>
+                    <th class="p-4">รายละเอียด</th>
+                    <th class="p-4">ราคา</th>
+                    <th class="p-4">ไฟล์รูปในโฟลเดอร์</th>
+                    <th class="p-4">จัดการ</th>
+                  </tr>
+                </thead>
+                <tbody id="admin-products-tbody" class="divide-y divide-stone-100 text-sm">
+                  <!-- Products rows rendered by JS -->
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+
+        <!-- TAB 3: Image Folder (Google Drive Simulation) -->
+        <div id="admin-tab-drive" class="hidden bg-white p-6 rounded-3xl shadow-sm border border-amber-100">
+          <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-stone-100 pb-4 mb-6 gap-2">
+            <div>
+              <h3 class="font-bold text-lg text-stone-800 flex items-center gap-2">
+                <span>📁 โฟลเดอร์เก็บรูปภาพแยกต่างหาก:</span>
+                <code class="bg-blue-50 text-blue-700 px-2.5 py-1 rounded-lg text-sm">Google Drive / Honey_Shop_Images</code>
+              </h3>
+              <p class="text-xs text-stone-500 mt-1">ระบบแยกไฟล์รูปภาพออกจากฐานข้อมูล Google Sheets โดยอ้างอิงผ่าน File ID / URL เพื่อความรวดเร็วในการโหลดหน้าเว็บ</p>
+            </div>
+          </div>
+
+          <div id="drive-folder-grid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
+            <!-- Folder items rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ==========================================
+         PAGE 5: หน้าขอบคุณ (THANK YOU PAGE)
+    =========================================== -->
+    <section id="page-thankyou" class="page-section py-14">
+      <div class="max-w-xl mx-auto px-4">
+        <div class="bg-white p-8 sm:p-10 rounded-3xl shadow-xl border border-amber-200 text-center">
+          <div class="w-20 h-20 bg-green-100 text-green-600 rounded-full flex items-center justify-center text-4xl mx-auto mb-6 shadow-inner">
+            ✓
+          </div>
+          <span class="bg-green-100 text-green-800 text-xs font-bold px-3 py-1 rounded-full">บันทึกข้อมูลลง Google Sheets สำเร็จ</span>
+          <h2 class="text-2xl sm:text-3xl font-bold text-stone-900 mt-3 mb-2">ขอบคุณสำหรับคำสั่งซื้อ!</h2>
+          <p class="text-stone-600 text-sm mb-6">เราได้รับคำสั่งซื้อของคุณเรียบร้อยแล้ว ทีมงานจะดำเนินการจัดส่งความหวานบริสุทธิ์ถึงมือคุณโดยเร็วที่สุด</p>
+
+          <!-- Order Receipt Box -->
+          <div class="bg-amber-50/80 border border-amber-200 rounded-2xl p-5 text-left mb-8 space-y-2.5 text-sm">
+            <div class="flex justify-between border-b border-amber-200/70 pb-2">
+              <span class="text-stone-500">หมายเลขคำสั่งซื้อ (Order ID):</span>
+              <span id="ty-order-id" class="font-bold text-amber-900">ORD-000000</span>
+            </div>
+            <div class="flex justify-between">
+              <span class="text-stone-500">ชื่อผู้รับ:</span>
+              <span id="ty-cust-name" class="font-semibold text-stone-800">-</span>
+            </div>
+            <div>
+              <span class="text-stone-500 block">รายการที่สั่ง:</span>
+              <span id="ty-items" class="font-medium text-stone-800 text-xs block mt-0.5">-</span>
+            </div>
+            <div class="flex justify-between pt-2 border-t border-amber-200/70">
+              <span class="font-bold text-stone-700">ยอดชำระรวม:</span>
+              <span id="ty-total" class="font-bold text-lg text-amber-700">0 บาท</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <button onclick="navigateTo('home')" class="honey-gradient text-white font-semibold px-6 py-3 rounded-xl shadow hover:opacity-95 transition">
+              กลับสู่หน้าแรก
+            </button>
+            <button onclick="navigateTo('admin')" class="bg-stone-100 text-stone-700 font-semibold px-6 py-3 rounded-xl hover:bg-stone-200 transition">
+              ตรวจสอบสถานะในหน้าแอดมิน
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-amber-950 text-amber-200/80 py-8 mt-12 border-t border-amber-900">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs sm:text-sm">
+      <div class="flex items-center gap-2">
+        <span class="text-xl">🍯</span>
+        <span class="font-bold text-white">Golden Honey Store</span>
+        <span>— น้ำผึ้งแท้จากธรรมชาติ 100%</span>
+      </div>
+      <div>
+        ระบบฐานข้อมูล Google Sheets & โฟลเดอร์เก็บรูปภาพแยกส่วน
+      </div>
+    </div>
+  </footer>
+
+  <!-- ==========================================
+       JAVASCRIPT APPLICATION LOGIC
+  =========================================== -->
+  <script>
+    // 1. Custom SVG Illustrations matching User's Uploaded Images (Vejpong & Doi Kham)
+    const SVG_ASSETS = {
+      vejpong: `
+        <svg viewBox="0 0 180 200" class="w-full h-full drop-shadow-md">
+          <!-- Left Bottle -->
+          <g transform="translate(15, 10)">
+            <!-- Yellow Nozzle Cap -->
+            <path d="M28 5 L42 5 L45 25 L25 25 Z" fill="#FACC15" stroke="#CA8A04" stroke-width="1.5"/>
+            <rect x="22" y="25" width="26" height="14" rx="2" fill="#EAB308" stroke="#CA8A04" stroke-width="1.5"/>
+            <!-- Honey Bottle Body -->
+            <path d="M25 39 L45 39 L58 110 L58 170 Q58 178 48 178 L22 178 Q12 178 12 170 L12 110 Z" fill="#D97706" stroke="#92400E" stroke-width="1.5"/>
+            <path d="M27 42 L34 42 L22 110 L22 172 L16 172 L16 110 Z" fill="#F59E0B" opacity="0.5"/>
+            <!-- Blue & Yellow Vejpong Label -->
+            <path d="M12 112 Q35 95 58 112 L58 168 Q35 174 12 168 Z" fill="#1D4ED8" stroke="#FACC15" stroke-width="2"/>
+            <circle cx="35" cy="130" r="14" fill="#FDE047" stroke="#EF4444" stroke-width="1.5"/>
+            <!-- Bee Icon -->
+            <ellipse cx="35" cy="131" rx="5" ry="7" fill="#1E293B"/>
+            <line x1="30" y1="129" x2="40" y2="129" stroke="#FACC15" stroke-width="1.5"/>
+            <line x1="30" y1="133" x2="40" y2="133" stroke="#FACC15" stroke-width="1.5"/>
+            <text x="35" y="154" font-size="6.5" fill="#FFFFFF" font-weight="bold" text-anchor="middle">น้ำผึ้งเวชพงศ์</text>
+            <text x="35" y="162" font-size="4.5" fill="#FDE047" text-anchor="middle">100% Pure Honey</text>
+          </g>
+          <!-- Right Bottle (Twin Pack) -->
+          <g transform="translate(88, 10)">
+            <path d="M28 5 L42 5 L45 25 L25 25 Z" fill="#FACC15" stroke="#CA8A04" stroke-width="1.5"/>
+            <rect x="22" y="25" width="26" height="14" rx="2" fill="#EAB308" stroke="#CA8A04" stroke-width="1.5"/>
+            <path d="M25 39 L45 39 L58 110 L58 170 Q58 178 48 178 L22 178 Q12 178 12 170 L12 110 Z" fill="#D97706" stroke="#92400E" stroke-width="1.5"/>
+            <path d="M27 42 L34 42 L22 110 L22 172 L16 172 L16 110 Z" fill="#F59E0B" opacity="0.5"/>
+            <path d="M12 112 Q35 95 58 112 L58 168 Q35 174 12 168 Z" fill="#1D4ED8" stroke="#FACC15" stroke-width="2"/>
+            <circle cx="35" cy="130" r="14" fill="#FDE047" stroke="#EF4444" stroke-width="1.5"/>
+            <ellipse cx="35" cy="131" rx="5" ry="7" fill="#1E293B"/>
+            <line x1="30" y1="129" x2="40" y2="129" stroke="#FACC15" stroke-width="1.5"/>
+            <line x1="30" y1="133" x2="40" y2="133" stroke="#FACC15" stroke-width="1.5"/>
+            <text x="35" y="154" font-size="6.5" fill="#FFFFFF" font-weight="bold" text-anchor="middle">น้ำผึ้งเวชพงศ์</text>
+            <text x="35" y="162" font-size="4.5" fill="#FDE047" text-anchor="middle">100% Pure Honey</text>
+          </g>
+        </svg>
+      `,
+      doikham: `
+        <svg viewBox="0 0 180 200" class="w-full h-full drop-shadow-md">
+          <!-- Tall Glass Bottle (Doi Kham) -->
+          <g transform="translate(22, 8)">
+            <rect x="22" y="2" width="22" height="12" rx="2" fill="#EAB308" stroke="#A16207" stroke-width="1.5"/>
+            <path d="M24 14 L42 14 L46 42 L52 55 L52 175 Q52 182 44 182 L22 182 Q14 182 14 175 L14 55 L20 42 Z" fill="#B45309" stroke="#78350F" stroke-width="1.5"/>
+            <rect x="18" y="60" width="8" height="115" rx="3" fill="#F59E0B" opacity="0.45"/>
+            <!-- White & Gold Label -->
+            <rect x="19" y="62" width="28" height="108" rx="4" fill="#FFFBEB" stroke="#65A30D" stroke-width="1.5"/>
+            <circle cx="33" cy="76" r="7" fill="#FACC15"/>
+            <text x="33" y="92" font-size="7.5" fill="#78350F" font-weight="bold" text-anchor="middle">ดอยคำ</text>
+            <!-- Honeycomb Graphic -->
+            <polygon points="33,102 41,107 41,117 33,122 25,117 25,107" fill="#F59E0B"/>
+            <text x="33" y="138" font-size="6.5" fill="#1C1917" font-weight="bold" text-anchor="middle">น้ำผึ้ง 100%</text>
+            <text x="33" y="147" font-size="5" fill="#78350F" text-anchor="middle">เกสรดอกลำไย</text>
+            <circle cx="38" cy="160" r="6" fill="none" stroke="#65A30D" stroke-width="1"/>
+            <text x="38" y="162" font-size="4" fill="#65A30D" font-weight="bold" text-anchor="middle">100%</text>
+          </g>
+          <!-- Squeeze Tube / Jar Set -->
+          <g transform="translate(88, 52)">
+            <!-- Squeeze Tube -->
+            <path d="M8 15 L44 15 L40 115 L12 115 Z" fill="#F59E0B" stroke="#B45309" stroke-width="1.5"/>
+            <rect x="15" y="115" width="22" height="12" rx="2" fill="#EAB308" stroke="#A16207" stroke-width="1.5"/>
+            <text x="26" y="55" font-size="8" fill="#78350F" font-weight="bold" text-anchor="middle">ดอยคำ</text>
+            <text x="26" y="70" font-size="6" fill="#451A03" text-anchor="middle">น้ำผึ้ง 100%</text>
+            <text x="26" y="80" font-size="5" fill="#451A03" text-anchor="middle">เกสรดอกลำไย</text>
+          </g>
+        </svg>
+      `,
+      custom: `
+        <svg viewBox="0 0 180 200" class="w-full h-full drop-shadow-md">
+          <g transform="translate(45, 20)">
+            <rect x="25" y="10" width="40" height="16" rx="4" fill="#D97706"/>
+            <rect x="15" y="26" width="60" height="130" rx="16" fill="#F59E0B" stroke="#92400E" stroke-width="2"/>
+            <rect x="22" y="55" width="46" height="75" rx="8" fill="#FFFBEB"/>
+            <text x="45" y="88" font-size="10" fill="#92400E" font-weight="bold" text-anchor="middle">PURE</text>
+            <text x="45" y="103" font-size="10" fill="#92400E" font-weight="bold" text-anchor="middle">HONEY</text>
+            <text x="45" y="118" font-size="7" fill="#D97706" text-anchor="middle">100% Natural</text>
+          </g>
+        </svg>
+      `
+    };
+
+    // 2. Initial State & Mock Google Sheets Database (Stored in LocalStorage for persistence)
+    const DEFAULT_PRODUCTS = [
+      {
+        sku: 'SKU-001',
+        name: 'น้ำผึ้งเวชพงศ์ (แพ็กคู่ 2 ขวด)',
+        description: 'น้ำผึ้งสดแท้จากธรรมชาติ 100% ตราน้ำผึ้งเวชพงศ์ ขวดบีบใช้งานง่าย ไม่หกเลอะเทอะ หอมหวานเข้มข้น',
+        price: 250,
+        stock: 48,
+        svgKey: 'vejpong',
+        driveFileName: 'vejpong_twin_pack_01.jpg',
+        driveFileId: '1VejPong811b84fcd8b20d9fa'
+      },
+      {
+        sku: 'SKU-002',
+        name: 'น้ำผึ้งดอยคำ เกสรดอกลำไย 100%',
+        description: 'น้ำผึ้งแท้ 100% ไม่แต่งกลิ่น ไม่เจือสี คัดสรรจากน้ำหวานเกสรดอกลำไยธรรมชาติ กลิ่นหอมละมุนเป็นเอกลักษณ์',
+        price: 180,
+        stock: 35,
+        svgKey: 'doikham',
+        driveFileName: 'doikham_longan_honey_02.webp',
+        driveFileId: '1DoiKham_c156c26899_webp'
+      }
+    ];
+
+    const DEFAULT_ORDERS = [
+      {
+        orderId: 'ORD-849201',
+        date: '25/11/2026 14:30',
+        customerName: 'คุณกานดา รักสุขภาพ',
+        phone: '089-456-7890',
+        address: '123/45 ถ.สุขุมวิท แขวงคลองเตย เขตคลองเตย กรุงเทพฯ 10110',
+        items: 'น้ำผึ้งเวชพงศ์ (แพ็กคู่ 2 ขวด) x1, น้ำผึ้งดอยคำ เกสรดอกลำไย 100% x1',
+        totalPrice: 430,
+        payment: 'โอนเงินผ่านธนาคาร / PromptPay',
+        status: 'จัดส่งแล้ว'
+      }
+    ];
+
+    let products = JSON.parse(localStorage.getItem('honey_products')) || DEFAULT_PRODUCTS;
+    let orders = JSON.parse(localStorage.getItem('honey_orders')) || DEFAULT_ORDERS;
+    let cart = JSON.parse(localStorage.getItem('honey_cart')) || [];
+    let gasWebAppUrl = localStorage.getItem('honey_gas_url') || '';
+
+    function saveData() {
+      localStorage.setItem('honey_products', JSON.stringify(products));
+      localStorage.setItem('honey_orders', JSON.stringify(orders));
+      localStorage.setItem('honey_cart', JSON.stringify(cart));
+    }
+
+    // 3. Toast Notification System
+    function showToast(message, type = 'success') {
+      const container = document.getElementById('toast-container');
+      const toast = document.createElement('div');
+      const bgClass = type === 'success' ? 'bg-stone-900 text-amber-300 border-amber-500/40' : 'bg-red-600 text-white border-red-400';
+      toast.className = `${bgClass} border px-4 py-3 rounded-2xl shadow-xl text-sm font-medium flex items-center gap-2.5 transform transition-all duration-300 translate-y-2 opacity-0 pointer-events-auto`;
+      toast.innerHTML = `<span>${type === 'success' ? '🍯' : '⚠️'}</span><span>${message}</span>`;
+      container.appendChild(toast);
+
+      requestAnimationFrame(() => {
+        toast.classList.remove('translate-y-2', 'opacity-0');
+      });
+
+      setTimeout(() => {
+        toast.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => toast.remove(), 300);
+      }, 3000);
+    }
+
+    // 4. Navigation System (5 Pages)
+    function navigateTo(pageId) {
+      document.querySelectorAll('.page-section').forEach(sec => sec.classList.remove('active'));
+      const target = document.getElementById(`page-${pageId}`);
+      if (target) target.classList.add('active');
+
+      // Update Desktop Nav active styles
+      document.querySelectorAll('.nav-btn').forEach(btn => {
+        const isTarget = btn.getAttribute('data-nav') === pageId;
+        if (btn.getAttribute('data-nav') !== 'admin') {
+          btn.className = isTarget
+            ? 'nav-btn px-4 py-2 rounded-xl text-sm font-semibold transition text-amber-900 bg-amber-100 flex items-center gap-1.5'
+            : 'nav-btn px-4 py-2 rounded-xl text-sm font-medium transition text-stone-600 hover:bg-amber-50 hover:text-amber-800 flex items-center gap-1.5';
+        }
+      });
+
+      if (pageId === 'products') renderProducts();
+      if (pageId === 'order') renderCart();
+      if (pageId === 'admin') renderAdmin();
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      document.getElementById('mobile-menu').classList.toggle('hidden');
+    }
+
+    // 5. Render Products Page (2+ SKUs)
+    function renderProducts() {
+      const grid = document.getElementById('products-grid');
+      grid.innerHTML = products.map(p => `
+        <div class="bg-white rounded-3xl shadow-sm border border-amber-100 overflow-hidden flex flex-col sm:flex-row hover:shadow-lg hover:border-amber-300 transition group">
+          <!-- Product Image Box -->
+          <div class="sm:w-2/5 bg-gradient-to-br from-amber-50 to-amber-100/60 p-6 flex items-center justify-center relative">
+            <span class="absolute top-3 left-3 bg-white/90 text-amber-900 text-[11px] font-bold px-2.5 py-1 rounded-lg shadow-sm border border-amber-200">
+              ${p.sku}
+            </span>
+            <div class="w-40 h-44 group-hover:scale-105 transition duration-300">
+              ${SVG_ASSETS[p.svgKey] || SVG_ASSETS.custom}
+            </div>
+          </div>
+
+          <!-- Product Details -->
+          <div class="sm:w-3/5 p-6 flex flex-col justify-between">
+            <div>
+              <div class="flex items-center justify-between gap-2">
+                <span class="text-xs text-green-700 bg-green-50 px-2.5 py-0.5 rounded-full font-medium">✓ มีสินค้าพร้อมส่ง (${p.stock} ชิ้น)</span>
+              </div>
+              <h3 class="text-xl font-bold text-amber-950 mt-2">${p.name}</h3>
+              <p class="text-stone-600 text-sm mt-2 leading-relaxed">${p.description}</p>
+              <div class="mt-3 text-[11px] text-stone-400 flex items-center gap-1">
+                <span>📁 Drive Image:</span>
+                <span class="underline">${p.driveFileName}</span>
+              </div>
+            </div>
+
+            <div class="mt-6 pt-4 border-t border-amber-100 flex items-center justify-between gap-3">
+              <div>
+                <span class="text-xs text-stone-400 block">ราคาพิเศษ</span>
+                <span class="text-2xl font-bold text-amber-700">${p.price.toLocaleString()} <span class="text-sm font-normal">บาท</span></span>
+              </div>
+              <div class="flex gap-2">
+                <button onclick="addToCart('${p.sku}')" class="bg-amber-100 text-amber-900 hover:bg-amber-200 font-semibold px-4 py-2.5 rounded-xl text-sm transition">
+                  + ตะกร้า
+                </button>
+                <button onclick="buyNow('${p.sku}')" class="honey-gradient text-white font-semibold px-4 py-2.5 rounded-xl text-sm shadow hover:opacity-95 transition">
+                  สั่งซื้อเลย
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // 6. Cart Functions
+    function updateCartBadges() {
+      const count = cart.reduce((sum, item) => sum + item.qty, 0);
+      document.getElementById('nav-cart-badge').innerText = count;
+      document.getElementById('mobile-cart-badge').innerText = count;
+      const prodBadge = document.getElementById('prod-page-badge');
+      if (prodBadge) prodBadge.innerText = count;
+    }
+
+    function addToCart(sku) {
+      const product = products.find(p => p.sku === sku);
+      if (!product) return;
+      const existing = cart.find(c => c.sku === sku);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ sku: product.sku, name: product.name, price: product.price, svgKey: product.svgKey, qty: 1 });
+      }
+      saveData();
+      updateCartBadges();
+      showToast(`เพิ่ม "${product.name}" ลงตะกร้าแล้ว`);
+    }
+
+    function buyNow(sku) {
+      addToCart(sku);
+      navigateTo('order');
+    }
+
+    function changeQty(sku, delta) {
+      const item = cart.find(c => c.sku === sku);
+      if (!item) return;
+      item.qty += delta;
+      if (item.qty <= 0) {
+        cart = cart.filter(c => c.sku !== sku);
+      }
+      saveData();
+      updateCartBadges();
+      renderCart();
+    }
+
+    function renderCart() {
+      const container = document.getElementById('cart-items-container');
+      if (cart.length === 0) {
+        container.innerHTML = `
+          <div class="text-center py-10 bg-amber-50/50 rounded-2xl border border-dashed border-amber-200">
+            <div class="text-4xl mb-2">🛒</div>
+            <p class="text-stone-500 text-sm mb-4">ยังไม่มีสินค้าในตะกร้าของคุณ</p>
+            <button onclick="navigateTo('products')" class="honey-gradient text-white px-5 py-2 rounded-xl text-sm font-semibold shadow">
+              ไปเลือกชมสินค้า
+            </button>
+          </div>
+        `;
+        document.getElementById('order-total-price').innerText = '0 บาท';
+        return;
+      }
+
+      let total = 0;
+      container.innerHTML = cart.map(item => {
+        const subtotal = item.price * item.qty;
+        total += subtotal;
+        return `
+          <div class="flex items-center justify-between gap-3 p-3.5 bg-amber-50/60 rounded-2xl border border-amber-100">
+            <div class="flex items-center gap-3">
+              <div class="w-12 h-14 bg-white rounded-xl p-1 border border-amber-100 shrink-0">
+                ${SVG_ASSETS[item.svgKey] || SVG_ASSETS.custom}
+              </div>
+              <div>
+                <span class="text-[11px] font-bold text-amber-700">${item.sku}</span>
+                <h4 class="font-bold text-sm text-stone-800">${item.name}</h4>
+                <p class="text-xs text-stone-500">${item.price.toLocaleString()} บาท / ชิ้น</p>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button onclick="changeQty('${item.sku}', -1)" class="w-7 h-7 rounded-lg bg-white border border-stone-200 font-bold text-stone-700 hover:bg-amber-100">-</button>
+              <span class="w-6 text-center font-bold text-sm">${item.qty}</span>
+              <button onclick="changeQty('${item.sku}', 1)" class="w-7 h-7 rounded-lg bg-white border border-stone-200 font-bold text-stone-700 hover:bg-amber-100">+</button>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      document.getElementById('order-total-price').innerText = `${total.toLocaleString()} บาท`;
+    }
+
+    // 7. Submit Order -> Save to Google Sheets (and LocalStorage) -> Go to Thank You Page
+    async function handleOrderSubmit(e) {
+      e.preventDefault();
+      if (cart.length === 0) {
+        showToast('กรุณาเลือกสินค้าลงตะกร้าก่อนสั่งซื้อ', 'error');
+        return;
+      }
+
+      const btn = document.getElementById('btn-confirm-order');
+      btn.disabled = true;
+      btn.innerText = 'กำลังบันทึกข้อมูลลง Google Sheets...';
+
+      const orderId = 'ORD-' + Math.floor(100000 + Math.random() * 900000);
+      const now = new Date();
+      const dateStr = now.toLocaleDateString('th-TH') + ' ' + now.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      const itemsSummary = cart.map(i => `${i.name} x${i.qty}`).join(', ');
+      const totalPrice = cart.reduce((sum, i) => sum + (i.price * i.qty), 0);
+
+      const newOrder = {
+        orderId,
+        date: dateStr,
+        customerName: document.getElementById('cust-name').value.trim(),
+        phone: document.getElementById('cust-phone').value.trim(),
+        address: document.getElementById('cust-address').value.trim(),
+        payment: document.getElementById('cust-payment').value,
+        items: itemsSummary,
+        totalPrice,
+        status: 'รอดำเนินการ'
+      };
+
+      // If user configured a real Google Apps Script URL, send POST request
+      if (gasWebAppUrl) {
+        try {
+          await fetch(gasWebAppUrl, {
+            method: 'POST',
+            mode: 'no-cors',
+            body: JSON.stringify({ action: 'createOrder', ...newOrder })
+          });
+        } catch (err) {
+          console.warn('GAS sync fallback to local DB:', err);
+        }
+      }
+
+      // Save to local Google Sheets DB state
+      orders.unshift(newOrder);
+      cart = [];
+      saveData();
+      updateCartBadges();
+
+      // Populate Thank You Page
+      document.getElementById('ty-order-id').innerText = newOrder.orderId;
+      document.getElementById('ty-cust-name').innerText = `${newOrder.customerName} (${newOrder.phone})`;
+      document.getElementById('ty-items').innerText = newOrder.items;
+      document.getElementById('ty-total').innerText = `${newOrder.totalPrice.toLocaleString()} บาท`;
+
+      document.getElementById('order-form').reset();
+      btn.disabled = false;
+      btn.innerText = 'ยืนยันการสั่งซื้อสินค้า';
+
+      showToast('สั่งซื้อสำเร็จ! บันทึกลงฐานข้อมูลเรียบร้อย');
+      navigateTo('thankyou');
+    }
+
+    // 8. Admin Dashboard Functions
+    function saveGasUrl() {
+      const url = document.getElementById('gas-url-input').value.trim();
+      gasWebAppUrl = url;
+      localStorage.setItem('honey_gas_url', url);
+      showToast(url ? 'บันทึก Google Apps Script URL เรียบร้อยแล้ว' : 'ล้างค่า URL แล้ว (ใช้งานโหมดฐานข้อมูลจำลอง)');
+    }
+
+    function switchAdminTab(tabName) {
+      ['orders', 'products', 'drive'].forEach(t => {
+        document.getElementById(`admin-tab-${t}`).classList.add('hidden');
+        const btn = document.getElementById(`tab-btn-${t}`);
+        btn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-stone-800 text-stone-300 hover:bg-stone-700 transition';
+      });
+      document.getElementById(`admin-tab-${tabName}`).classList.remove('hidden');
+      const activeBtn = document.getElementById(`tab-btn-${tabName}`);
+      activeBtn.className = 'px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold bg-amber-500 text-stone-950 transition';
+    }
+
+    function renderAdmin() {
+      document.getElementById('gas-url-input').value = gasWebAppUrl;
+      document.getElementById('admin-order-count').innerText = `ทั้งหมด ${orders.length} รายการ`;
+
+      // Render Orders Table
+      const ordersTbody = document.getElementById('admin-orders-tbody');
+      ordersTbody.innerHTML = orders.map(o => {
+        let badgeColor = 'bg-yellow-100 text-yellow-800';
+        if (o.status === 'ชำระเงินแล้ว') badgeColor = 'bg-blue-100 text-blue-800';
+        if (o.status === 'จัดส่งแล้ว') badgeColor = 'bg-green-100 text-green-800';
+
+        return `
+          <tr class="hover:bg-amber-50/40 transition">
+            <td class="p-4 font-bold text-amber-900 whitespace-nowrap">${o.orderId}</td>
+            <td class="p-4 text-xs text-stone-500 whitespace-nowrap">${o.date}</td>
+            <td class="p-4">
+              <div class="font-semibold text-stone-800">${o.customerName}</div>
+              <div class="text-xs text-stone-500">📞 ${o.phone} | ${o.payment || 'COD'}</div>
+              <div class="text-xs text-stone-400 max-w-xs truncate" title="${o.address}">📍 ${o.address}</div>
+            </td>
+            <td class="p-4 text-xs text-stone-700 max-w-xs">${o.items}</td>
+            <td class="p-4 font-bold text-stone-900 whitespace-nowrap">${o.totalPrice.toLocaleString()} บ.</td>
+            <td class="p-4 whitespace-nowrap">
+              <span class="px-2.5 py-1 rounded-full text-xs font-semibold ${badgeColor}">${o.status}</span>
+            </td>
+            <td class="p-4 whitespace-nowrap">
+              <select onchange="updateOrderStatus('${o.orderId}', this.value)" class="border border-stone-200 rounded-xl px-2.5 py-1.5 text-xs bg-white focus:border-amber-500 outline-none">
+                <option value="รอดำเนินการ" ${o.status === 'รอดำเนินการ' ? 'selected' : ''}>รอดำเนินการ</option>
+                <option value="ชำระเงินแล้ว" ${o.status === 'ชำระเงินแล้ว' ? 'selected' : ''}>ชำระเงินแล้ว</option>
+                <option value="จัดส่งแล้ว" ${o.status === 'จัดส่งแล้ว' ? 'selected' : ''}>จัดส่งแล้ว</option>
+              </select>
+            </td>
+          </tr>
+        `;
+      }).join('');
+
+      // Render Products Table in Admin
+      const prodTbody = document.getElementById('admin-products-tbody');
+      prodTbody.innerHTML = products.map(p => `
+        <tr class="hover:bg-amber-50/40">
+          <td class="p-4 font-bold text-amber-800">${p.sku}</td>
+          <td class="p-4 font-semibold text-stone-800">${p.name}</td>
+          <td class="p-4 text-xs text-stone-500 max-w-xs">${p.description}</td>
+          <td class="p-4 font-bold text-stone-900">${p.price.toLocaleString()} บ.</td>
+          <td class="p-4 text-xs text-blue-600 font-mono">📁 ${p.driveFileName}</td>
+          <td class="p-4">
+            ${products.length > 2 ? `<button onclick="deleteProduct('${p.sku}')" class="text-red-500 hover:underline text-xs font-semibold">ลบ SKU</button>` : '<span class="text-xs text-stone-400">SKU หลัก</span>'}
+          </td>
+        </tr>
+      `).join('');
+
+      // Render Google Drive Folder View
+      const driveGrid = document.getElementById('drive-folder-grid');
+      driveGrid.innerHTML = products.map(p => `
+        <div class="border border-stone-200 rounded-2xl p-4 bg-stone-50/50 flex flex-col justify-between">
+          <div class="h-36 bg-white rounded-xl p-3 flex items-center justify-center border border-stone-100 mb-3">
+            ${SVG_ASSETS[p.svgKey] || SVG_ASSETS.custom}
+          </div>
+          <div>
+            <div class="flex items-center justify-between">
+              <span class="text-xs font-bold text-stone-800 truncate">${p.driveFileName}</span>
+              <span class="text-[10px] bg-green-100 text-green-700 px-2 py-0.5 rounded font-semibold">Public</span>
+            </div>
+            <p class="text-[11px] text-stone-500 mt-1">เชื่อมโยงกับ: <strong>${p.sku}</strong> (${p.name})</p>
+            <p class="text-[10px] text-stone-400 font-mono mt-1 truncate">File ID: ${p.driveFileId}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function updateOrderStatus(orderId, newStatus) {
+      const order = orders.find(o => o.orderId === orderId);
+      if (order) {
+        order.status = newStatus;
+        saveData();
+        renderAdmin();
+        showToast(`อัปเดตสถานะ ${orderId} เป็น "${newStatus}" แล้ว`);
+      }
+    }
+
+    function handleAddProduct(e) {
+      e.preventDefault();
+      const sku = document.getElementById('new-sku').value.trim().toUpperCase();
+      const name = document.getElementById('new-name').value.trim();
+      const price = Number(document.getElementById('new-price').value);
+      const description = document.getElementById('new-desc').value.trim();
+
+      if (products.some(p => p.sku === sku)) {
+        showToast('รหัส SKU นี้มีอยู่ในระบบแล้ว', 'error');
+        return;
+      }
+
+      products.push({
+        sku,
+        name,
+        description,
+        price,
+        stock: 30,
+        svgKey: 'custom',
+        driveFileName: `${sku.toLowerCase()}_product.png`,
+        driveFileId: '1Drive_' + Math.random().toString(36).substring(2, 10)
+      });
+
+      saveData();
+      e.target.reset();
+      renderAdmin();
+      showToast(`เพิ่มสินค้า ${sku} ลงฐานข้อมูลเรียบร้อยแล้ว`);
+    }
+
+    function deleteProduct(sku) {
+      products = products.filter(p => p.sku !== sku);
+      saveData();
+      renderAdmin();
+      showToast(`ลบสินค้า ${sku} ออกจากระบบแล้ว`);
+    }
+
+    // 9. Initialize App on Load
+    window.addEventListener('DOMContentLoaded', () => {
+      document.getElementById('hero-svg-1').innerHTML = SVG_ASSETS.vejpong;
+      document.getElementById('hero-svg-2').innerHTML = SVG_ASSETS.doikham;
+      updateCartBadges();
+      renderProducts();
+    });
+  </script>
+</body>
+</html>
